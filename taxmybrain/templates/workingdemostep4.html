@@ -1,0 +1,66 @@
+{%- extends "base.html" %}
+
+{# Loads some of the macros included with Flask-Bootstrap. We are using the
+   utils module here to automatically render Flask's flashed messages in a
+   bootstrap friendly manner #}
+{% import "bootstrap/utils.html" as utils %}
+
+{% block title %}TaxMyBrain - Working Demo{% endblock %}
+
+{% block navbar %}
+<div class="navbar navbar-default" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+           <a class="navbar-brand" href="/">TaxMyBrain</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{# Inside the ``content`` is where you should place most of your own stuff.
+   This will keep scripts at the page end and a navbar you add on later
+   intact. #}
+{% block content %}
+  <div class="container">
+  {%- with messages = get_flashed_messages(with_categories=True) %}
+  {%- if messages %}
+    <div class="row">
+      <div class="col-md-12">
+        {{utils.flashed_messages(messages)}}
+      </div>
+    </div>
+  {%- endif %}
+  {%- endwith %}
+    <div>
+    <h1>Working Demo</h1>
+    <h2>Step 4: Upload your VAT Calculations for this period</h2>
+    <div id="previews" class="dropzone-previews"></div>
+    <div class="row">
+    <div class="col-md-6">
+        <button id="clickable">Dropzone button</button>
+        <form action='{{ url_for('main.upload_file') }}' method=post enctype=multipart/form-data>
+        <input type="file" name="file">
+        <input type="hidden" name="periodkey" value={{ period }}>
+        <input type=submit value=Upload>
+    </form>
+    </div>
+    </div>
+    <p>Drag your spreadsheet file onto this page to upload, or click the button to find the file on your computer.</p>
+  
+    <div class="container">
+    <br>
+    </div>
+   </div>
+{%- endblock %}
+
+{% block scripts %}
+{{ super()}}
+<script src="{{url_for('main.static', filename='js/dropzone.min.js')}}"></script>
+<script>
+  new Dropzone(document.body, { // Make the whole body a dropzone
+    url: "{{ url_for('main.upload_file') }}", // Set the url
+    previewsContainer: "#previews", // Define the container to display the previews
+    clickable: "#clickable" // Define the element that should be used as click trigger to select files.
+  });
+</script>
+{% endblock %}

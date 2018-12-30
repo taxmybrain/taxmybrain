@@ -1,0 +1,4 @@
+graft taxmybrain/static
+graft taxmybrain/templates
+graft tests
+global-exclude *.pyc

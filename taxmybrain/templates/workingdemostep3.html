@@ -1,0 +1,74 @@
+{%- extends "base.html" %}
+
+{# Loads some of the macros included with Flask-Bootstrap. We are using the
+   utils module here to automatically render Flask's flashed messages in a
+   bootstrap friendly manner #}
+{% import "bootstrap/utils.html" as utils %}
+
+{% block title %}TaxMyBrain - Working Demo{% endblock %}
+
+{% block navbar %}
+<div class="navbar navbar-default" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+           <a class="navbar-brand" href="/">TaxMyBrain</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="{{ url_for('main.workingdemostep3') }}">Obligations</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{# Inside the ``content`` is where you should place most of your own stuff.
+   This will keep scripts at the page end and a navbar you add on later
+   intact. #}
+{% block content %}
+  <div class="container">
+  {%- with messages = get_flashed_messages(with_categories=True) %}
+  {%- if messages %}
+    <div class="row">
+      <div class="col-md-12">
+        {{utils.flashed_messages(messages)}}
+      </div>
+    </div>
+  {%- endif %}
+  {%- endwith %}
+    <div>
+    <h1>Working Demo</h1>
+    <h2>Step 3: View your VAT obligations according to HMRC</h2>
+    <div class="row">
+    <div class="col-md-6">
+        <table class="table table-bordered">
+            <tr>
+                <th>Start Period</th>
+                <th>End Period</th>
+                <th>Period Key</th>
+                <th>Payment Due</th>
+                <th>Status</th>
+            </tr>
+            {% for row in obligations.obligations %}
+            <tr>
+                <td>{{ row.start|datetimefilter }}</td>
+                <td>{{ row.end|datetimefilter }}</td>
+                <td>{{ row.periodKey }}</td>
+                <td>{{ row.due|datetimefilter }}</td>
+                {% if row.status == 'F' %}
+                    <td><a href='{{ url_for('main.vat_return', period=row.periodKey) }}'>Filed</a></td>
+                {% else %}
+                    <td><a href='{{ url_for('main.vatdetails', fromdate=row.start, todate=row.end, period=row.periodKey) }}' role="button" class="btn btn-success">Submit VAT Return</a></td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    </div>
+    <p>Click Submit VAT Return button to enter Vat details for the corresponding period</p>
+  
+    <div class="container">
+    <br>
+    </div>
+   </div>
+{%- endblock %}

@@ -1,0 +1,108 @@
+{%- extends "base.html" %}
+
+{# Loads some of the macros included with Flask-Bootstrap. We are using the
+   utils module here to automatically render Flask's flashed messages in a
+   bootstrap friendly manner #}
+{% import "bootstrap/utils.html" as utils %}
+
+{% block title %}TaxMyBrain - Working Demo{% endblock %}
+
+{% block navbar %}
+<div class="navbar navbar-default" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+           <a class="navbar-brand" href="/">TaxMyBrain</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{# Inside the ``content`` is where you should place most of your own stuff.
+   This will keep scripts at the page end and a navbar you add on later
+   intact. #}
+{% block content %}
+  <div class="container">
+  {%- with messages = get_flashed_messages(with_categories=True) %}
+  {%- if messages %}
+    <div class="row">
+      <div class="col-md-12">
+        {{utils.flashed_messages(messages)}}
+      </div>
+    </div>
+  {%- endif %}
+  {%- endwith %}
+    <div>
+    <h1>Working Demo</h1>
+    <h2>Step 5: Here is the data that has been uploaded from the spreadsheet</h2>
+    <div class="row">
+
+     <form class="form-horizontal" action="{{ url_for('main.submit_vat_return') }}" method="post">
+  <div class="form-group">
+    <label class="control-label col-sm-2" for="vatDueSales">1. VAT due in this period on sales:</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="vatDueSales" name="vatDueSales" placeholder="Sales VAT" value='{{ data.C1 }}'>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-sm-2" for="vatDueAcquisitions">2. VAT due in this period on EC acquisitions:</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="vatDueAcquisitions" name="vatDueAcquisitions" placeholder="EC acquisitions VAT" value='{{ data.C2 }}'>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-sm-2" for="totalVatDue">3. Total VAT due (sum of boxes 1 and 2):</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="totalVatDue" name="totalVatDue" placeholder="Total VAT" value='{{ data.C1|todecimal + data.C2|todecimal }}'>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-sm-2" for="vatReclaimedCurrPeriod">4. VAT reclaimed in this period on purchases:</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="vatReclaimedCurrPeriod" name="vatReclaimedCurrPeriod" placeholder="VAT Reclaimed on purchases" value='{{ data.C4 }}'>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-sm-2" for="netVatDue">5. Net VAT to be paid to Customs or reclaimed by you:</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="netVatDue" name="netVatDue" placeholder="Net VAT to be paid / reclaimed" value='{{ data.C1|todecimal + data.C2|todecimal - data.C4|todecimal }}'>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-sm-2" for="totalValueSalesExVAT">6. Total value of sales, excluding VAT:</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="totalValueSalesExVAT" name="totalValueSalesExVAT" placeholder="Net VAT to be paid / reclaimed" value='{{ data.C6 }}'>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-sm-2" for="totalValuePurchasesExVAT">7. Total value of purchases, excluding VAT:</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="totalValuePurchasesExVAT" name="totalValuePurchasesExVAT" placeholder="Total value of purchases ex VAT" value='{{ data.C7 }}'>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-sm-2" for="totalValueGoodsSuppliedExVAT">8. Total value of EC sales, excluding VAT:</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="totalValueGoodsSuppliedExVAT" name="totalValueGoodsSuppliedExVAT" placeholder="Total value of EC sales ex VAT" value='{{ data.C8 }}'>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-sm-2" for="totalAcquisitionsExVAT">9. Total value of EC purchases, excluding VAT:</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="totalAcquisitionsExVAT" name="totalAcquisitionsExVAT" placeholder="Total value of EC purchases ex VAT" value='{{ data.C9 }}'>
+    </div>
+  </div>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="submit" class="btn btn-default">Submit</button>
+    </div>
+  </div>
+</form> 
+    </div>
+    <p>Click Submit VAT Return to send this data to HMRC</p>
+  
+    <div class="container">
+    <br>
+    </div>
+   </div>
+{%- endblock %}

@@ -1,0 +1,43 @@
+{%- extends "base.html" %}
+
+{# Loads some of the macros included with Flask-Bootstrap. We are using the
+   utils module here to automatically render Flask's flashed messages in a
+   bootstrap friendly manner #}
+{% import "bootstrap/utils.html" as utils %}
+
+{% block navbar %}
+<div class="navbar navbar-default" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+           <a class="navbar-brand" href="/">TaxMyBrain</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{# Inside the ``content`` is where you should place most of your own stuff.
+   This will keep scripts at the page end and a navbar you add on later
+   intact. #}
+{% block content %}
+  <div class="container">
+  {%- with messages = get_flashed_messages(with_categories=True) %}
+  {%- if messages %}
+    <div class="row">
+      <div class="col-md-12">
+        {{utils.flashed_messages(messages)}}
+      </div>
+    </div>
+  {%- endif %}
+  {%- endwith %}
+    <div class="jumbotron">
+      <h1>TaxMyBrain</h1>
+      <p>Serving the UK business community. Raising money for Brain Tumour Research</p>
+    </div>
+    <h3>Simple and Secure Bridging Software for submitting Business VAT returns to HMRC.</h3>
+    <h3>Free to use in return for a donation to Brain Tumour Research.</h3>
+    <div class="col-md-4 text-center">
+        <a class="btn btn-lg btn-default" role="button"
+           href="{{ url_for('main.workingdemostep1') }}" >Working Demo</a>
+    </div>
+   </div>
+{%- endblock %}

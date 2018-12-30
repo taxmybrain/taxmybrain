@@ -1,0 +1,115 @@
+{%- extends "base.html" %}
+
+{# Loads some of the macros included with Flask-Bootstrap. We are using the
+   utils module here to automatically render Flask's flashed messages in a
+   bootstrap friendly manner #}
+{% import "bootstrap/utils.html" as utils %}
+
+{% block title %}TaxMyBrain - Working Demo{% endblock %}
+
+{% block navbar %}
+<div class="navbar navbar-default" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+           <a class="navbar-brand" href="/">TaxMyBrain</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{# Inside the ``content`` is where you should place most of your own stuff.
+   This will keep scripts at the page end and a navbar you add on later
+   intact. #}
+{% block content %}
+  <div class="container">
+  {%- with messages = get_flashed_messages(with_categories=True) %}
+  {%- if messages %}
+    <div class="row">
+      <div class="col-md-12">
+        {{utils.flashed_messages(messages)}}
+      </div>
+    </div>
+  {%- endif %}
+  {%- endwith %}
+    <div>
+    <h1>Working Demo</h1>
+    <h2>Step 2: Make a note of your Test User Details</h2>
+    <br>
+    <p>Here are the details of your Test User Account provided by HMRC:</p>
+    <br>
+    <div class="row">
+    <div class="col-md-6">
+        <table class="table table-bordered">
+            <tr>
+                <td>Company Name:</td>
+                <td>{{ userdata.organisationDetails.name }}</td>
+            </tr>
+            <tr>
+                <td>Address:</td>
+                <td>{{ userdata.organisationDetails.address.line1 }}<br>
+                {{ userdata.organisationDetails.address.line2 }}<br>
+                {{ userdata.organisationDetails.address.postcode }}</td>
+            </tr>
+            <tr>
+                <td>Email:</td>
+                <td>{{ userdata.emailAddress }}</td>
+            </tr>
+            <tr>
+                <td>User ID:</td>
+                <td><input type="text" value="{{ userdata.userId }}" id="idInput">
+                <a href='javascript:;' id=password onclick="copyId()" role="button" class="btn btn-success">Copy UserID to clipboard
+                </a>
+                </td>
+            </tr>
+            <tr>
+                <td>Password:</td>
+                <td><input type="text" value="{{ userdata.password }}" id="passwordInput">
+                <a href='javascript:;' id=password onclick="copyPassword()" role="button" class="btn btn-success">Copy Password to clipboard
+                </a>
+                </td>
+            </tr>
+            <tr>
+                <td>VAT Number:</td>
+                <td>{{ userdata.vrn }}</td>
+            </tr>
+        </table>
+    </div>
+    </div>
+    <p>Keep this page open as you will need the User ID and Password when you log into your Test HMRC account</p>
+    <p>Click the button below to log in to the Test HMRC account.</p>
+    <div class="col-md-4 text-center">
+        <a class="btn btn-lg btn-default" role="button"
+           href="{{ url_for('main.login', returnpage='main.workingdemostep3') }}" target="_blank">Log in to HMRC Test Account (Opens in a new tab)</a>
+    </div>
+    <div class="container">
+    <br>
+    </div>
+   </div>
+{%- endblock %}
+
+{% block scripts %}
+<script>
+function copyId() {
+  /* Get the text field */
+  var copyText = document.getElementById("idInput");
+
+  /* Select the text field */
+  copyText.select();
+
+  /* Copy the text inside the text field */
+  document.execCommand("copy");
+}
+
+function copyPassword() {
+  /* Get the text field */
+  var copyText = document.getElementById("passwordInput");
+
+  /* Select the text field */
+  copyText.select();
+
+  /* Copy the text inside the text field */
+  document.execCommand("copy");
+}
+
+</script>
+{%- endblock %}
